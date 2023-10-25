@@ -1,16 +1,11 @@
 import base64
 import datetime
-import json
 import hashlib
-import os
 import random
 import string
-import time
 
-import requests
 
 class BaseHandler:
-
     def __init__(self, client_id, redirect_uri, access_token=None, refresh_token=None, expiration_time=None):
         self.client_id = client_id
         self.redirect_uri = redirect_uri
@@ -20,11 +15,11 @@ class BaseHandler:
 
     def _generate_code(self) -> tuple[str, str]:
         rand = random.SystemRandom()
-        code_verifier = ''.join(rand.choices(string.ascii_letters + string.digits, k=128))
+        code_verifier = "".join(rand.choices(string.ascii_letters + string.digits, k=128))
 
-        code_sha_256 = hashlib.sha256(code_verifier.encode('utf-8')).digest()
+        code_sha_256 = hashlib.sha256(code_verifier.encode("utf-8")).digest()
         b64 = base64.urlsafe_b64encode(code_sha_256)
-        code_challenge = b64.decode('utf-8').replace('=', '')
+        code_challenge = b64.decode("utf-8").replace("=", "")
 
         return (code_verifier, code_challenge)
 
@@ -42,4 +37,7 @@ class BaseHandler:
         pass
 
     def upload_training_results(self, model_name, local_file_paths):
+        pass
+
+    def download_file(self, destination_file_path, local_path_to_save, __retry_count=0):
         pass
