@@ -23,7 +23,7 @@ class BaseHandler:
 
         return (code_verifier, code_challenge)
 
-    def _token_alive(self):
+    def token_alive(self):
         current_time = datetime.datetime.now()
 
         if self.expiration_time is None or current_time > self.expiration_time:
@@ -34,6 +34,9 @@ class BaseHandler:
         pass
 
     def token_refresh(self):
+        pass
+
+    def upload_file(self, local_path, destination_path, __retry_count=0):
         pass
 
     def upload_training_results(self, model_name, local_file_paths):

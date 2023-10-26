@@ -70,9 +70,9 @@ class DropboxHandler(BaseHandler):
                 print(f"code exchange failed: {response.text}")
                 return False
 
-    def __upload_file(self, local_path, destination_path, __retry_count=0):
+    def upload_file(self, local_path, destination_path, __retry_count=0):
         url = "https://content.dropboxapi.com/2/files/upload"
-        if self._token_alive() is False:
+        if self.token_alive() is False:
             if self.token_refresh() is False:
                 print("stop uploading file as token expired and can't refresh.")
                 return False
@@ -97,12 +97,12 @@ class DropboxHandler(BaseHandler):
                 return True
             elif response.status_code == 401:
                 self.token_refresh()
-                return self.__upload_file(local_path, destination_path, __retry_count)
+                return self.upload_file(local_path, destination_path, __retry_count)
             else:
                 print(f"Unkown error: {response.status_code}, {response.text}")
                 if __retry_count < 3:
                     time.sleep(3)
-                    return self.__upload_file(local_path, destination_path, __retry_count + 1)
+                    return self.upload_file(local_path, destination_path, __retry_count + 1)
                 else:
                     print("stop uploading files as it files several times.")
                     return False
@@ -117,11 +117,11 @@ class DropboxHandler(BaseHandler):
         for local_file_path in local_file_paths:
             file_name = os.path.basename(local_file_path)
             destination_path = f"/{model_name}/{file_name}"
-            self.__upload_file(local_file_path, destination_path)
+            self.upload_file(local_file_path, destination_path)
 
     def download_file(self, destination_file_path, local_path_to_save, __retry_count=0):
         url = "https://content.dropboxapi.com/2/files/download"
-        if self._token_alive() is False:
+        if self.token_alive() is False:
             if self.token_refresh() is False:
                 print("stop downloading file as token expired and can't refresh.")
                 return False
