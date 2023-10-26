@@ -1,6 +1,7 @@
 import base64
 import datetime
 import hashlib
+import os
 import random
 import string
 
@@ -40,7 +41,13 @@ class BaseHandler:
         pass
 
     def upload_training_results(self, model_name, local_file_paths):
-        pass
+        if isinstance(local_file_paths, str):
+            local_file_paths = [local_file_paths]
+
+        for local_file_path in local_file_paths:
+            file_name = os.path.basename(local_file_path)
+            destination_path = f"/{model_name}/{file_name}"
+            self.upload_file(local_file_path, destination_path)
 
     def download_file(self, destination_file_path, local_path_to_save, __retry_count=0):
         pass

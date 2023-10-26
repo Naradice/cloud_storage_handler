@@ -110,15 +110,6 @@ class DropboxHandler(BaseHandler):
             print(f"{local_path} not found.")
             return False
 
-    def upload_training_results(self, model_name, local_file_paths):
-        if isinstance(local_file_paths, str):
-            local_file_paths = [local_file_paths]
-
-        for local_file_path in local_file_paths:
-            file_name = os.path.basename(local_file_path)
-            destination_path = f"/{model_name}/{file_name}"
-            self.upload_file(local_file_path, destination_path)
-
     def download_file(self, destination_file_path, local_path_to_save, __retry_count=0):
         url = "https://content.dropboxapi.com/2/files/download"
         if self.token_alive() is False:
