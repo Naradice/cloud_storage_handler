@@ -135,11 +135,14 @@ class DropboxHandler(BaseHandler):
         elif response.status_code == 401:
             self.token_refresh()
             return self.download_file(destination_file_path, local_path_to_save, __retry_count)
+        elif response.status_code == 409:
+            print(f"File not found: {response.status_code}, {response.text}")
+            return None
         else:
             print(f"Unkown error: {response.status_code}, {response.text}")
             if __retry_count < 3:
                 time.sleep(3)
                 return self.download_file(destination_file_path, local_path_to_save, __retry_count + 1)
             else:
-                print("stop uploading files as it files several times.")
+                print("stop downloading files as it files several times.")
                 return None
