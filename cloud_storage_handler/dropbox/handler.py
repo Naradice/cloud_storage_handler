@@ -129,9 +129,14 @@ class DropboxHandler(BaseHandler):
 
         response = requests.post(url, headers=header)
         if response.status_code == 200:
-            with open(local_path_to_save, mode="w") as fp:
-                fp.write(response.text)
-            return local_path_to_save
+            if response.headers.get("Content-Type", "").startswith("application/octet-stream"):
+                with open(local_path_to_save, mode="wb") as fp:
+                    fp.write(response.content)
+                return local_path_to_save
+            else:
+                with open(local_path_to_save, mode="w") as fp:
+                    fp.write(response.text)
+                return local_path_to_save
         elif response.status_code == 401:
             self.token_refresh()
             return self.download_file(destination_file_path, local_path_to_save, __retry_count)
